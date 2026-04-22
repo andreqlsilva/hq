@@ -1,9 +1,12 @@
-#!/usr/bin/env -S deno run --allow-net --allow-read
+#!/usr/bin/env -S deno run --allow-net --allow-read --allow-env
 // hq.js - HQ development server
-// Usage: deno run --allow-net --allow-read hq.js [port]
+// Usage: deno run --allow-net --allow-read --allow-env hq.js [port]
+
+import { connect, loadConfig, saveConfig, DEFAULTS } from "./src/db.js";
 
 const port = parseInt(Deno.args[0]) || 8000;
 const root = new URL(".", import.meta.url).pathname;
+const db   = await connect();
 
 const MIME = {
   html: "text/html; charset=utf-8",
@@ -30,6 +33,22 @@ async function serveFile(path) {
 async function handler(req) {
   const url = new URL(req.url);
   let path = url.pathname;
+
+  if (path === "/api/config") {
+    if (req.method === "GET") {
+      const config = await loadConfig(db);
+      return new Response(JSON.stringify(config), { headers: { "content-type": MIME.json } });
+    }
+    if (req.method === "POST") {
+      const config = await req.json();
+      await saveConfig(db, config);
+      return new Response(null, { status: 204 });
+    }
+    if (req.method === "DELETE") {
+      await saveConfig(db, structuredClone(DEFAULTS));
+      return new Response(null, { status: 204 });
+    }
+  }
 
   if (path === "/api/pages") {
     const pages = [];

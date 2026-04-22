@@ -88,4 +88,4 @@ test("toggle with unknown id returns array unchanged", () => {
   assertEquals(result[0].active, sample[0].active);
 });
 
-summary();
+await summary();

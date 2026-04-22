@@ -1,32 +1,18 @@
-// src/store.js - Config persistence via localStorage.
-// All exported functions are side-effect-free at import time — safe to import in Deno tests.
+// src/store.js - Config persistence via server API.
 
-const KEY = "hq:config";
-
-export const DEFAULTS = {
-  nav: [
-    { id: "adm", label: "adm", href: "#adm", active: true },
-  ],
-  home: {
-    blocks: [],
-  },
-};
-
-export function load() {
-  try {
-    const raw = localStorage.getItem(KEY);
-    if (!raw) return structuredClone(DEFAULTS);
-    const stored = JSON.parse(raw);
-    return { ...structuredClone(DEFAULTS), ...stored };
-  } catch {
-    return structuredClone(DEFAULTS);
-  }
+export async function load() {
+  const res = await fetch("/api/config");
+  return res.json();
 }
 
-export function save(config) {
-  localStorage.setItem(KEY, JSON.stringify(config));
+export async function save(config) {
+  await fetch("/api/config", {
+    method: "POST",
+    headers: { "content-type": "application/json" },
+    body: JSON.stringify(config),
+  });
 }
 
-export function reset() {
-  localStorage.removeItem(KEY);
+export async function reset() {
+  await fetch("/api/config", { method: "DELETE" });
 }

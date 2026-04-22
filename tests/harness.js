@@ -1,19 +1,12 @@
 // tests/harness.js - Minimal test harness for Deno.
-// No dependencies. Call test() for each case, summary() at the end.
+// No dependencies. Call test() for each case, await summary() at the end.
 
 let passed = 0;
 let failed = 0;
-const results = [];
+const queue = [];
 
 export function test(name, fn) {
-  try {
-    fn();
-    passed++;
-    results.push({ ok: true, name });
-  } catch (e) {
-    failed++;
-    results.push({ ok: false, name, error: e.message });
-  }
+  queue.push({ name, fn });
 }
 
 export function assert(cond, msg = "assertion failed") {
@@ -38,10 +31,16 @@ export function assertThrows(fn, msgIncludes) {
   }
 }
 
-export function summary() {
-  for (const r of results) {
-    const prefix = r.ok ? "ok  " : "FAIL";
-    console.log(`${prefix} ${r.name}${r.error ? "\n     " + r.error : ""}`);
+export async function summary() {
+  for (const { name, fn } of queue) {
+    try {
+      await fn();
+      passed++;
+      console.log(`ok   ${name}`);
+    } catch (e) {
+      failed++;
+      console.log(`FAIL ${name}\n     ${e.message}`);
+    }
   }
   console.log(`\n${passed} passed, ${failed} failed`);
   if (failed > 0) Deno.exit(1);

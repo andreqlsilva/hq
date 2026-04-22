@@ -52,9 +52,9 @@ function navRow(item, config, onSave, redraw) {
   const chk = document.createElement("input");
   chk.type = "checkbox";
   chk.checked = item.active;
-  chk.addEventListener("change", () => {
+  chk.addEventListener("change", async () => {
     config.nav = toggle(config.nav, item.id);
-    save(config);
+    await save(config);
     onSave();
   });
   lbl.appendChild(chk);
@@ -64,9 +64,9 @@ function navRow(item, config, onSave, redraw) {
   if (item.id !== "adm") {
     const rm = document.createElement("button");
     rm.textContent = "remove";
-    rm.addEventListener("click", () => {
+    rm.addEventListener("click", async () => {
       config.nav = config.nav.filter(n => n.id !== item.id);
-      save(config);
+      await save(config);
       onSave();
       redraw();
     });
@@ -88,7 +88,7 @@ function addLinkForm(config, onSave, redraw) {
   btn.textContent = "add";
 
   form.append(labelInput, hrefInput, btn);
-  form.addEventListener("submit", e => {
+  form.addEventListener("submit", async e => {
     e.preventDefault();
     const lbl  = labelInput.value.trim();
     const href = hrefInput.value.trim();
@@ -96,7 +96,7 @@ function addLinkForm(config, onSave, redraw) {
     const id = lbl.toLowerCase().replace(/\s+/g, "-");
     if (config.nav.find(n => n.id === id)) return;
     config.nav.push({ id, label: lbl, href, active: true });
-    save(config);
+    await save(config);
     onSave();
     redraw();
     form.reset();
@@ -111,13 +111,13 @@ function setupDrag(li, config, onSave) {
   });
   li.addEventListener("dragend", () => li.classList.remove("dragging"));
   li.addEventListener("dragover", e => e.preventDefault());
-  li.addEventListener("drop", e => {
+  li.addEventListener("drop", async e => {
     e.preventDefault();
     const fromId = e.dataTransfer.getData("text/plain");
     const toId   = li.dataset.id;
     if (fromId === toId) return;
     config.nav = reorder(config.nav, fromId, toId);
-    save(config);
+    await save(config);
     onSave();
   });
 }
@@ -142,9 +142,9 @@ function homeSection(config, onSave) {
 
   const addBtn = document.createElement("button");
   addBtn.textContent = "add block";
-  addBtn.addEventListener("click", () => {
+  addBtn.addEventListener("click", async () => {
     config.home.blocks.push({ title: "New block", theme: "", links: [] });
-    save(config);
+    await save(config);
     onSave();
     redraw();
   });
@@ -157,17 +157,17 @@ function blockRow(block, bi, config, onSave, redrawBlocks) {
 
   const titleIn = input("block-title", "Block title");
   titleIn.value = block.title;
-  titleIn.addEventListener("change", () => { block.title = titleIn.value; save(config); onSave(); });
+  titleIn.addEventListener("change", async () => { block.title = titleIn.value; await save(config); onSave(); });
 
   const themeIn = input("block-theme", "theme (css class)");
   themeIn.value = block.theme || "";
-  themeIn.addEventListener("change", () => { block.theme = themeIn.value; save(config); onSave(); });
+  themeIn.addEventListener("change", async () => { block.theme = themeIn.value; await save(config); onSave(); });
 
   const rmBlock = document.createElement("button");
   rmBlock.textContent = "remove block";
-  rmBlock.addEventListener("click", () => {
+  rmBlock.addEventListener("click", async () => {
     config.home.blocks.splice(bi, 1);
-    save(config);
+    await save(config);
     onSave();
     redrawBlocks();
   });
@@ -204,21 +204,21 @@ function linkRow(link, li, block, config, onSave, redrawLinks) {
 
   const labelIn = input("link-label", "label");
   labelIn.value = link.label;
-  labelIn.addEventListener("change", () => { link.label = labelIn.value; save(config); onSave(); });
+  labelIn.addEventListener("change", async () => { link.label = labelIn.value; await save(config); onSave(); });
 
   const hrefIn = input("link-href", "href");
   hrefIn.value = link.href;
-  hrefIn.addEventListener("change", () => { link.href = hrefIn.value; save(config); onSave(); });
+  hrefIn.addEventListener("change", async () => { link.href = hrefIn.value; await save(config); onSave(); });
 
   const iconIn = input("link-icon", "icon url");
   iconIn.value = link.icon || "";
-  iconIn.addEventListener("change", () => { link.icon = iconIn.value; save(config); onSave(); });
+  iconIn.addEventListener("change", async () => { link.icon = iconIn.value; await save(config); onSave(); });
 
   const rm = document.createElement("button");
   rm.textContent = "x";
-  rm.addEventListener("click", () => {
+  rm.addEventListener("click", async () => {
     block.links.splice(li, 1);
-    save(config);
+    await save(config);
     onSave();
     redrawLinks();
   });

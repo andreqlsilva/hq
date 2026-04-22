@@ -8,10 +8,10 @@ import { render as renderHome } from "./home.js";
 const nav  = document.getElementById("hq-nav");
 const main = document.getElementById("hq-main");
 
-let config = load();
+let config = await load();
 
-export function refresh() {
-  config = load();
+export async function refresh() {
+  config = await load();
   renderNav(nav, config.nav);
   route();
 }
