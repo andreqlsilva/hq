@@ -39,7 +39,7 @@ deno run --allow-net --allow-read hq.js 9000   # custom port
 ## Test
 
 ```sh
-./build.sh
+./test.sh
 ```
 
 Each `tests/*.test.js` is also runnable directly:

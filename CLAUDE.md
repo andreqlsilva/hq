@@ -17,7 +17,7 @@ hq/
 ├── index.html        SPA shell (<nav id="hq-nav">, <main id="hq-main">)
 ├── hq.js             Deno HTTP server (static files + /api/pages)
 ├── hq.css            all styles
-├── build.sh          test runner (runs all tests/*.test.js)
+├── test.sh           test runner (runs all tests/*.test.js)
 ├── src/
 │   ├── router.js     hash router + app init; imports DOM at module level
 │   ├── store.js      localStorage config (load/save/reset); no DOM
@@ -50,7 +50,7 @@ deno run --allow-net --allow-read hq.js 9000   # custom port
 ## Testing
 
 ```sh
-./build.sh                                      # full suite
+./test.sh                                       # full suite
 deno run --allow-read --allow-env tests/nav.test.js    # single file
 ```
 
