@@ -3,20 +3,26 @@
 import { reorder, toggle } from "./nav.js";
 import { save } from "./store.js";
 
-export function render(container, config, onSave) {
+export async function render(container, config, onSave) {
   container.innerHTML = "";
 
   const h1 = document.createElement("h1");
   h1.textContent = "adm";
   container.appendChild(h1);
 
-  container.appendChild(navSection(config, onSave));
+  let pages = [];
+  try {
+    const res = await fetch("/api/pages");
+    pages = await res.json();
+  } catch { /* pages unavailable */ }
+
+  container.appendChild(navSection(config, onSave, pages));
   container.appendChild(homeSection(config, onSave));
 }
 
 // ---------- nav section ----------
 
-function navSection(config, onSave) {
+function navSection(config, onSave, pages) {
   const section = el("section", "adm-section");
   section.appendChild(heading(2, "Navigation"));
 
@@ -31,7 +37,7 @@ function navSection(config, onSave) {
 
   redraw();
   section.appendChild(list);
-  section.appendChild(addLinkForm(config, onSave, redraw));
+  section.appendChild(addLinkForm(config, onSave, redraw, pages));
   return section;
 }
 
@@ -77,9 +83,39 @@ function navRow(item, config, onSave, redraw) {
   return li;
 }
 
-function addLinkForm(config, onSave, redraw) {
+function addLinkForm(config, onSave, redraw, pages = []) {
   const form = el("form", "adm-add-form");
   form.appendChild(heading(3, "Add link"));
+
+  if (pages.length) {
+    const select = document.createElement("select");
+    const placeholder = document.createElement("option");
+    placeholder.value = "";
+    placeholder.textContent = "— add a page —";
+    select.appendChild(placeholder);
+    for (const page of pages) {
+      if (config.nav.find(n => n.id === page.id)) continue;
+      const opt = document.createElement("option");
+      opt.value = JSON.stringify(page);
+      opt.textContent = page.label;
+      select.appendChild(opt);
+    }
+    const addPageBtn = document.createElement("button");
+    addPageBtn.type = "button";
+    addPageBtn.textContent = "add";
+    addPageBtn.addEventListener("click", async () => {
+      if (!select.value) return;
+      const page = JSON.parse(select.value);
+      if (config.nav.find(n => n.id === page.id)) return;
+      config.nav.push({ id: page.id, label: page.label, href: page.href, active: true });
+      await save(config);
+      onSave();
+      redraw();
+      select.value = "";
+    });
+    form.append(select, addPageBtn);
+    form.appendChild(heading(3, "Add custom link"));
+  }
 
   const labelInput = input("label", "label");
   const hrefInput  = input("href",  "href or #hash");

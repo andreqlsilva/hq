@@ -5,7 +5,8 @@ import { Client } from "jsr:@db/postgres";
 
 export const DEFAULTS = {
   nav: [
-    { id: "adm", label: "adm", href: "#adm", active: true },
+    { id: "home", label: "home", href: "#",    active: true },
+    { id: "adm",  label: "adm",  href: "#adm", active: true },
   ],
   home: {
     blocks: [],

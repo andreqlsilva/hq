@@ -7,7 +7,7 @@ export function render(container, config) {
   if (!blocks.length) {
     const p = document.createElement("p");
     p.className = "hq-empty";
-    p.textContent = "No blocks configured. Visit adm to set up your homepage.";
+    p.innerHTML = 'No blocks configured. Visit <a href="#adm">adm</a> to set up your homepage.';
     container.appendChild(p);
     return;
   }

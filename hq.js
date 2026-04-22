@@ -78,7 +78,7 @@ async function handler(req) {
     try {
       for await (const entry of Deno.readDir(root + "pages")) {
         if (entry.isDirectory) {
-          pages.push({ id: entry.name, label: entry.name, href: `pages/${entry.name}/` });
+          pages.push({ id: entry.name, label: entry.name, href: `pages/${entry.name}/index.html` });
         } else if (/\.(js|ts|html)$/.test(entry.name) && entry.name !== ".gitkeep") {
           const id = entry.name.replace(/\.(js|ts|html)$/, "");
           pages.push({ id, label: id, href: `pages/${entry.name}` });
@@ -91,6 +91,7 @@ async function handler(req) {
   }
 
   if (path === "/" || path === "") path = "/index.html";
+  if (path.endsWith("/")) path += "index.html";
   return serveFile(root + path.slice(1));
 }
 

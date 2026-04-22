@@ -25,7 +25,7 @@ await client.queryArray(DDL);
 test("loadConfig returns defaults when table is empty", async () => {
   const cfg = await loadConfig(client);
   assertEquals(cfg.nav.length, DEFAULTS.nav.length);
-  assertEquals(cfg.nav[0].id, "adm");
+  assertEquals(cfg.nav[0].id, DEFAULTS.nav[0].id);
   assertEquals(cfg.home.blocks.length, 0);
 });
 
@@ -87,4 +87,5 @@ test("componentClient schema persists across connections", async () => {
 });
 
 await summary();
+await client.queryArray("DROP TABLE IF EXISTS hq_config");
 await client.end();
