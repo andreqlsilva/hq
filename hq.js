@@ -1,6 +1,6 @@
-#!/usr/bin/env -S deno run --allow-net --allow-read --allow-env
+#!/usr/bin/env -S deno run --allow-net --allow-read --allow-env --allow-run
 // hq.js - HQ development server
-// Usage: deno run --allow-net --allow-read --allow-env hq.js [port]
+// Usage: deno run --allow-net --allow-read --allow-env --allow-run hq.js [port]
 
 import { connect, loadConfig, saveConfig, DEFAULTS } from "./src/db.js";
 

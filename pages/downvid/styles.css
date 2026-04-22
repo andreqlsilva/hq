@@ -1,0 +1,613 @@
+/* === GLOBAL STYLES === */
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica,
+    Arial, sans-serif;
+  background-color: #f4f7f6;
+  color: #333;
+  margin: 0;
+  padding: 20px;
+  font-size: 16px;
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+/* Center the main app container */
+#app {
+  max-width: 1400px;
+  margin: 20px auto;
+}
+
+/* === LAYOUT COMPONENTS === */
+
+/* Base container for most components */
+.Block {
+  display: block;
+  width: 100%;
+  padding: 15px;
+  margin-bottom: 10px;
+  background-color: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* NEW: Styles for the new InputBlock container */
+.InputBlock {
+  background-color: transparent;
+  border: none;
+  box-shadow: none;
+  padding: 0;
+  margin-bottom: 25px;
+}
+
+/* A horizontal flex container */
+.Row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 10px;
+  /* Rows inside blocks shouldn't have the block styling */
+  border: none;
+  background-color: transparent;
+  padding: 5px 0;
+  margin-bottom: 0;
+  box-shadow: none;
+}
+
+/* A vertical flex container for forms */
+.Form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* A 2-column flex layout */
+/* Applies to DualPane and Pager (which extends DualPane) */
+.DualPane,
+.Pager {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  /* These are layout containers, so override block styles */
+  background-color: transparent;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  margin-bottom: 10px;
+}
+
+
+/* === DUAL BLOCK (Vertical Stack) === */
+.DualBlock {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  gap: 0;
+}
+
+/* === TABBER SPECIFIC === */
+.Tabber > .TabStrip {
+  background-color: #f8f9fa;
+  border-bottom: 1px solid #dee2e6;
+  padding: 5px 10px;
+}
+
+.Tabber > .Block { /* The Content Pane */
+  border-top: none;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+  min-height: 200px;
+}
+
+/* === TAB STRIP === */
+.TabStrip {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+/* Title Area */
+.TabHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.TabHeader h3 { margin: 0; font-size: 1rem; color: #444; }
+
+/* The Row of Tabs */
+.TabContainer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+/* === THE TAB === */
+.Tab {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  background: #e9ecef;
+  border: 1px solid #ced4da;
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.2s;
+}
+
+.Tab:hover { background: #dfe4ea; }
+
+/* Active State */
+.Tab.picked {
+  background: #fff;
+  border-color: #dee2e6;
+  position: relative;
+  margin-bottom: -1px; /* Cover the border */
+  z-index: 10;
+  box-shadow: 0 -2px 3px rgba(0,0,0,0.02);
+}
+.Tab.picked .TextualElement { color: #0d6efd; font-weight: 600; }
+
+/* Tab Close Button */
+.Tab .ControlButton {
+  width: 20px; height: 20px;
+  display: flex; justify-content: center; align-items: center;
+  padding: 0; border: none;
+  background: rgba(0,0,0,0.08);
+  border-radius: 3px;
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1;
+}
+.Tab .ControlButton:hover { background: #dc3545; color: white; }
+
+/* --- Children of a base DualPane --- */
+.DualPane > .Block {
+  min-width: 0; /* Allows panes to shrink */
+}
+/* Left pane (1/7) */
+.DualPane > .Block:first-child {
+  flex: 1;
+}
+/* Right pane (6/7) */
+.DualPane > .Block:last-child {
+  flex: 6;
+}
+
+/* === TEXT & DISPLAY COMPONENTS === */
+
+h1,
+h2,
+h3,
+p,
+label {
+  margin: 0;
+  padding: 0;
+}
+
+.HeaderElement {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  color: #111;
+}
+
+h1.HeaderElement {
+  font-size: 2em;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 5px;
+}
+h2.HeaderElement {
+  font-size: 1.75em;
+}
+h3.HeaderElement {
+  font-size: 1.5em;
+  color: #222;
+}
+
+/* This is the default for labels (e.g., in InputBlock) */
+.LabelElement {
+  font-weight: 600;
+  margin-right: 5px;
+  display: block; /* Forces the label to take its own line */
+  margin-bottom: 5px; /* Adds a small space below the label */
+}
+
+/* Labels in a Form stack on top of their inputs */
+.Form .LabelElement {
+  display: block;
+  margin-bottom: 3px;
+}
+
+/* === INPUT & CONTROL COMPONENTS === */
+
+/* Common styles for all inputs */
+.InputElement, .TextInput, .NumberInput, .DateInput,
+.MenuInput, .FilePicker {
+  padding: 10px 12px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  width: 100%;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.InputElement:focus,
+.MenuInput:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+}
+
+/* NEW: Fixes inputs inside a Row (like RepList, Operacao) */
+/* Since Row.add forces 'display: inline', we must override width */
+.Row > .InputElement, .Row > .TextInput, .Row > .NumberInput, .Row > .DateInput,
+.Row > .MenuInput {
+  width: 200px; /* Give a default width */
+  margin-right: 10px;
+}
+
+/* Add spacing for other items in a Row */
+.Row > .ControlButton,
+.Row > .TextualElement,
+.Row > .Row { /* This targets nested Rows */
+  margin-right: 10px; 
+}
+
+/* NEW: Fixes labels inside a Row (like RepList, Operacao) */
+/* Overrides the 'display: block' rule from .LabelElement */
+.Row > .LabelElement {
+  display: inline;
+  margin-bottom: 0;
+  margin-right: 10px;
+}
+
+/* For NumberInputs in forms (65% of 100%) */
+.NumberInput {
+  width: 65%;
+}
+
+/* For NumberInputs in a Row (65% of 200px) */
+.Row > .NumberInput {
+  width: 130px;
+}
+
+.CheckboxInput {
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+  accent-color: #007bff;
+}
+
+.ControlButton {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: white;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.1s ease;
+}
+
+.ControlButton:hover {
+  background-color: #0056b3;
+}
+
+.ControlButton:active {
+  transform: translateY(1px);
+}
+
+/* === COMPOSITE COMPONENTS === */
+
+/* Blocks with a distinct header bar */
+.TitledBlock {
+  border-color: #ccc;
+}
+
+.BlockTitle {
+  /* This is a .Row, so it's already flex */
+  justify-content: space-between; /* Pushes title and buttons apart */
+  align-items: center;
+  background-color: #f9f9f9;
+  padding: 12px 15px;
+  /* Bleed to edges of parent padding */
+  margin: -15px -15px 15px -15px;
+  border-bottom: 1px solid #ccc;
+  border-radius: 8px 8px 0 0;
+  flex-wrap: nowrap; /* Forces the title and button to stay on one line */
+}
+
+/* This targets the "titleLine" (a Row) inside the BlockTitle */
+.BlockTitle > .Row {
+  flex-grow: 1; /* Let the title row grow */
+  flex-shrink: 1; /* Allow the title row to shrink */
+  min-width: 0; /* CRITICAL: Allows shrinking below content size */
+}
+
+/* This adds the "..." for long titles like "Alienantes" */
+.BlockTitle .TextualElement {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  padding-right: 10px; /* Adds space between text and button */
+  font-weight: 700;
+  font-size: 1.25em;
+}
+
+/* Main App Title */
+.DoiMaker > .BlockTitle {
+  background-color: #343a40;
+  color: white;
+  border-bottom: none;
+}
+
+/* --- EditableList --- */
+.EditableList {
+  background-color: #fdfdfd;
+}
+
+/* Style the '+' (add) button in the list header */
+.EditableList > .BlockTitle .ControlButton {
+  background-color: #28a745;
+  min-width: 40px; /* Give it a nice roundish shape */
+}
+.EditableList > .BlockTitle .ControlButton:hover {
+  background-color: #218838;
+}
+
+/* A single entry in the list */
+.ListEntry {
+  /* It's a .Row, so it's flex */
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 5px 10px;
+  margin-bottom: 8px;
+  background-color: #fff;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  justify-content: space-between;
+  position: relative;
+}
+
+/* The main clickable part of the list entry */
+.ListEntry > .Row:first-child {
+  cursor: pointer;
+  flex-grow: 1; /* Make the clickable part take up space */
+  padding: 5px;
+  border: none;
+  box-shadow: none;
+}
+
+/* Style the '-' (delete) button */
+.ListEntry .ControlButton {
+  background-color: #dc3545;
+  min-width: 40px;
+  margin-left: 10px;
+}
+.ListEntry .ControlButton:hover {
+  background-color: #c82333;
+}
+
+/* This positions the delete button, overriding 'display: inline' */
+.ListEntry > .ControlButton {
+  position: absolute;
+  right: 10px; /* 10px from the right edge */
+  top: 50%; /* 50% down from the top */
+  transform: translateY(-50%); /* This centers it vertically */
+  padding: 5px 12px; /* Reduces vertical padding */
+  font-size: 0.9rem; /* Makes the text slightly smaller */
+}
+
+/* --- Pager (UPDATED) --- */
+
+/* This is the left pane (the nav, which is an EditableList) */
+.Pager > .EditableList:first-child {
+  flex: 1; /* 20% ratio */
+  max-width: 180px;
+  background-color: #fcfcfc;
+  min-width: 100px; /* Protects nav from shrinking */
+}
+
+/* This is the right pane (the pane, which is a Block) */
+.Pager > .Block:last-child {
+  flex: 4; /* 80% ratio */
+  background-color: #fff;
+  border-left: 1px solid #e0e0e0;
+  min-width: 0; /* Allows this pane to shrink */
+}
+
+/* --- Pager Pane Header Font Size Reduction (UPDATED) --- */
+
+/* Targets H1 headers inside the PagerPane (right side) */
+.Pager > .Block:last-child h1.HeaderElement {
+  font-size: 1.5em; /* Default was 2em */
+}
+
+/* Targets H2 headers inside the PagerPane */
+.Pager > .Block:last-child h2.HeaderElement {
+  font-size: 1.25em; /* Default was 1.75em */
+}
+
+/* Targets H3 headers inside the PagerPane */
+.Pager > .Block:last-child h3.HeaderElement {
+  font-size: 1.15em; /* Default was 1.5em */
+}
+
+/* --- RepList (Representantes) --- */
+.RepList .ListEntry .LabelElement {
+  flex-shrink: 0; /* Don't let the label shrink */
+}
+.RepList .ListEntry .TextInput {
+  flex-grow: 2; /* Let the input field take up most of the space */
+}
+
+/* === STATE CLASSES === */
+
+/* The 'hidden' attribute used by .show() and .hide() */
+[hidden] {
+  display: none !important;
+}
+
+/* The .picked class, scoped ONLY to Pager nav items */
+/* This selects a .ListEntry.picked only if it's a descendant of
+   the .EditableList that is a *direct child* of a .Pager */
+.Pager > .EditableList .ListEntry.picked {
+  background-color: #e6f7ff;
+  border-color: #007bff;
+}
+
+.Pager > .EditableList .ListEntry.picked .TextualElement {
+  font-weight: 700;
+  color: #0056b3;
+}
+
+/* --- NEW: Reset Button Style --- */
+
+.ResetButton {
+  /* Use red "danger" color */
+  background-color: #dc3545;
+
+  /* This pushes the button (and any following buttons)
+     all the way to the right of the title bar */
+  margin-left: auto;
+}
+
+.ResetButton:hover {
+  background-color: #c82333; /* Darker red */
+}
+
+
+/* --- NEW: Color Switcher Button Style --- */
+
+.ColorButton {
+  /* Give it a neutral gray */
+  background-color: #6c757d;
+  min-width: 40px; /* Make it squarish */
+}
+
+.ColorButton:hover {
+  background-color: #5a6268;
+}
+
+/* === DARK MODE STYLES === */
+
+/* Default background and text */
+body.dark-mode {
+  background-color: #121212;
+  color: #e0e0e0;
+}
+
+/* Blocks */
+body.dark-mode .Block {
+  background-color: #1e1e1e;
+  border-color: #444;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+/* Headers */
+body.dark-mode .HeaderElement { color: #f1f1f1; }
+body.dark-mode h1.HeaderElement { border-bottom-color: #333; }
+body.dark-mode h3.HeaderElement { color: #e0e0e0; }
+
+/* Inputs (Text, Number, Date, Menu) */
+body.dark-mode .InputElement, 
+body.dark-mode .TextInput, 
+body.dark-mode .NumberInput, 
+body.dark-mode .DateInput,
+body.dark-mode .MenuInput, 
+body.dark-mode .FilePicker {
+  background-color: #4a4a4a;
+  border-color: #555;
+  color: #e0e0e0;
+}
+
+/* Input Focus */
+body.dark-mode .InputElement:focus, 
+body.dark-mode .TextInput:focus, 
+body.dark-mode .NumberInput:focus, 
+body.dark-mode .DateInput:focus,
+body.dark-mode .MenuInput:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.4);
+}
+
+/* Title Bars */
+body.dark-mode .BlockTitle {
+  background-color: #2a2a2a;
+  border-bottom-color: #444;
+}
+
+/* Main App Title Bar */
+body.dark-mode .DoiMaker > .BlockTitle {
+  background-color: #000000;
+}
+
+/* Editable Lists */
+body.dark-mode .EditableList {
+  background-color: #252525;
+}
+
+/* List Entries */
+body.dark-mode .ListEntry {
+  background-color: #2c2c2c;
+  border-color: #3a3a3a;
+}
+
+/* Pager Navigation */
+body.dark-mode .Pager > .EditableList:first-child {
+  background-color: #222;
+}
+
+/* Pager Content Pane */
+body.dark-mode .Pager > .Block:last-child {
+  background-color: #1e1e1e; /* Same as .Block */
+  border-left-color: #444;
+}
+
+/* Selected Pager Nav Item */
+body.dark-mode .Pager > .EditableList .ListEntry.picked {
+  background-color: #004a7c;
+  border-color: #007bff;
+}
+
+body.dark-mode .Pager > .EditableList .ListEntry.picked .TextualElement {
+  color: #e6f7ff;
+}
+
+/* === BUTTON FEEDBACK ANIMATIONS === */
+
+@keyframes feedback-green {
+  0% { transform: scale(1); }
+  20% { 
+    background-color: #28a745; 
+    box-shadow: 0 0 15px #28a745; 
+    border-color: #28a745;
+    transform: scale(1.05); 
+  }
+  100% { transform: scale(1); }
+}
+
+@keyframes feedback-red {
+  0% { transform: scale(1); }
+  20% { 
+    background-color: #dc3545; 
+    box-shadow: 0 0 15px #dc3545; 
+    border-color: #dc3545;
+    transform: scale(1.05); 
+  }
+  100% { transform: scale(1); }
+}
+
+.feedback-success {
+  animation: feedback-green 1.5s ease-out;
+  color: white !important; /* Ensure text remains readable */
+}
+
+.feedback-error {
+  animation: feedback-red 1.5s ease-out;
+  color: white !important;
+}
