@@ -1,0 +1,177 @@
+/* hq.css */
+*, *::before, *::after { box-sizing: border-box; }
+
+:root {
+  --bg:       #ffffff;
+  --fg:       #111111;
+  --nav-bg:   #111111;
+  --nav-fg:   #eeeeee;
+  --border:   #cccccc;
+  --muted:    #888888;
+  --hover-bg: #f0f0f0;
+}
+
+body {
+  margin: 0;
+  font-family: monospace;
+  font-size: 14px;
+  background: var(--bg);
+  color: var(--fg);
+}
+
+/* ---- nav ---- */
+
+#hq-nav {
+  background: var(--nav-bg);
+  padding: 0 1rem;
+}
+
+#hq-nav ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  gap: 1rem;
+  align-items: stretch;
+}
+
+#hq-nav li { display: flex; align-items: center; }
+
+#hq-nav a {
+  color: var(--nav-fg);
+  text-decoration: none;
+  padding: 0.5rem 0;
+  display: block;
+}
+
+#hq-nav a:hover { text-decoration: underline; }
+
+/* ---- main ---- */
+
+#hq-main { padding: 1.5rem; }
+
+/* ---- home blocks ---- */
+
+.hq-block { margin-bottom: 2rem; }
+
+.hq-block h2 {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin: 0 0 0.5rem;
+  padding-bottom: 0.25rem;
+  border-bottom: 1px solid var(--border);
+}
+
+.hq-block ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.hq-block a {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  text-decoration: none;
+  color: var(--fg);
+  border: 1px solid var(--border);
+  min-width: 4.5rem;
+  gap: 0.25rem;
+}
+
+.hq-block a:hover { background: var(--hover-bg); }
+
+.hq-block img { width: 32px; height: 32px; object-fit: contain; }
+
+.hq-empty { color: var(--muted); font-style: italic; }
+
+/* ---- adm ---- */
+
+#hq-main h1 { margin: 0 0 1.5rem; font-size: 1.1rem; }
+
+.adm-section { margin-bottom: 2.5rem; max-width: 560px; }
+
+.adm-section h2 { font-size: 0.9rem; margin: 0 0 0.75rem; }
+
+.adm-section h3 { font-size: 0.85rem; margin: 0.75rem 0 0.4rem; }
+
+.adm-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 0.75rem;
+}
+
+.adm-nav-list li {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--border);
+}
+
+.adm-nav-list li.dragging { opacity: 0.35; }
+
+.drag-handle { color: var(--muted); cursor: grab; user-select: none; }
+
+.item-label { flex: 1; }
+
+.adm-add-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: center;
+}
+
+.adm-block {
+  border: 1px solid var(--border);
+  padding: 0.75rem;
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.4rem;
+  align-items: flex-start;
+}
+
+.adm-link-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.25rem 0;
+  width: 100%;
+}
+
+.adm-link-list li {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 0.25rem;
+  flex-wrap: wrap;
+}
+
+/* ---- shared form elements ---- */
+
+input {
+  font-family: monospace;
+  font-size: 13px;
+  padding: 0.2rem 0.4rem;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--fg);
+}
+
+input:focus { outline: 1px solid var(--fg); }
+
+button {
+  font-family: monospace;
+  font-size: 13px;
+  cursor: pointer;
+  padding: 0.2rem 0.5rem;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--fg);
+}
+
+button:hover { background: var(--hover-bg); }
