@@ -40,3 +40,11 @@ export async function saveConfig(client, config) {
     [JSON.stringify(config)],
   );
 }
+
+export async function componentClient(id) {
+  const client = new Client(Deno.env.get("DATABASE_URL"));
+  await client.connect();
+  await client.queryArray(`CREATE SCHEMA IF NOT EXISTS "${id}"`);
+  await client.queryArray(`SET search_path TO "${id}"`);
+  return client;
+}

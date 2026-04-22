@@ -8,6 +8,18 @@ const port = parseInt(Deno.args[0]) || 8000;
 const root = new URL(".", import.meta.url).pathname;
 const db   = await connect();
 
+// Load component server modules from pages/*/server.js
+const componentRoutes = new Map();
+try {
+  for await (const entry of Deno.readDir(root + "pages")) {
+    if (!entry.isDirectory) continue;
+    try {
+      const mod = await import(`${root}pages/${entry.name}/server.js`);
+      if (mod.default) componentRoutes.set(entry.name, mod.default);
+    } catch { /* no server.js */ }
+  }
+} catch { /* no pages dir */ }
+
 const MIME = {
   html: "text/html; charset=utf-8",
   js:   "application/javascript",
@@ -48,6 +60,17 @@ async function handler(req) {
       await saveConfig(db, structuredClone(DEFAULTS));
       return new Response(null, { status: 204 });
     }
+  }
+
+  const compMatch = path.match(/^\/api\/pages\/([^/]+)(\/.*)?$/);
+  if (compMatch) {
+    const [, id, subpath = "/"] = compMatch;
+    const routes = componentRoutes.get(id);
+    if (routes) {
+      const handler = routes[`${req.method} ${subpath}`];
+      if (handler) return handler(req);
+    }
+    return new Response("not found", { status: 404 });
   }
 
   if (path === "/api/pages") {
