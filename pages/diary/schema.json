@@ -1,0 +1,8 @@
+{
+  "name": "Diary",
+  "fields": [
+    { "name": "description", "label": "Description", "type": "text" },
+    { "name": "value",       "label": "Amount",      "type": "number" },
+    { "name": "deductible",  "label": "Deductible",  "type": "boolean" }
+  ]
+}

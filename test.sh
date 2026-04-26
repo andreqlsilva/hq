@@ -8,7 +8,7 @@ fail=0
 
 for f in tests/*.test.js; do
   printf "  %-36s" "$f"
-  output=$(deno run --allow-read --allow-env --allow-net "$f" 2>&1)
+  output=$(deno run --allow-read --allow-write --allow-env --allow-net "$f" 2>&1)
   if [ $? -eq 0 ]; then
     echo "ok"
   else

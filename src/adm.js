@@ -17,7 +17,6 @@ export async function render(container, config, onSave) {
   } catch { /* pages unavailable */ }
 
   container.appendChild(navSection(config, onSave, pages));
-  container.appendChild(homeSection(config, onSave));
 }
 
 // ---------- nav section ----------
@@ -156,111 +155,6 @@ function setupDrag(li, config, onSave) {
     await save(config);
     onSave();
   });
-}
-
-// ---------- home section ----------
-
-function homeSection(config, onSave) {
-  const section = el("section", "adm-section");
-  section.appendChild(heading(2, "Homepage blocks"));
-
-  const blockList = el("div", "adm-block-list");
-
-  function redraw() {
-    blockList.innerHTML = "";
-    config.home.blocks.forEach((block, bi) => {
-      blockList.appendChild(blockRow(block, bi, config, onSave, redraw));
-    });
-  }
-
-  redraw();
-  section.appendChild(blockList);
-
-  const addBtn = document.createElement("button");
-  addBtn.textContent = "add block";
-  addBtn.addEventListener("click", async () => {
-    config.home.blocks.push({ title: "New block", theme: "", links: [] });
-    await save(config);
-    onSave();
-    redraw();
-  });
-  section.appendChild(addBtn);
-  return section;
-}
-
-function blockRow(block, bi, config, onSave, redrawBlocks) {
-  const div = el("div", "adm-block");
-
-  const titleIn = input("block-title", "Block title");
-  titleIn.value = block.title;
-  titleIn.addEventListener("change", async () => { block.title = titleIn.value; await save(config); onSave(); });
-
-  const themeIn = input("block-theme", "theme (css class)");
-  themeIn.value = block.theme || "";
-  themeIn.addEventListener("change", async () => { block.theme = themeIn.value; await save(config); onSave(); });
-
-  const rmBlock = document.createElement("button");
-  rmBlock.textContent = "remove block";
-  rmBlock.addEventListener("click", async () => {
-    config.home.blocks.splice(bi, 1);
-    await save(config);
-    onSave();
-    redrawBlocks();
-  });
-
-  div.append(titleIn, themeIn, rmBlock);
-
-  const linkList = el("ul", "adm-link-list");
-  div.appendChild(linkList);
-
-  function redrawLinks() {
-    linkList.innerHTML = "";
-    block.links.forEach((link, li) => {
-      linkList.appendChild(linkRow(link, li, block, config, onSave, redrawLinks));
-    });
-  }
-
-  redrawLinks();
-
-  const addLink = document.createElement("button");
-  addLink.textContent = "add link";
-  addLink.addEventListener("click", () => {
-    block.links.push({ label: "new", href: "#", icon: "" });
-    save(config);
-    onSave();
-    redrawLinks();
-  });
-  div.appendChild(addLink);
-
-  return div;
-}
-
-function linkRow(link, li, block, config, onSave, redrawLinks) {
-  const row = document.createElement("li");
-
-  const labelIn = input("link-label", "label");
-  labelIn.value = link.label;
-  labelIn.addEventListener("change", async () => { link.label = labelIn.value; await save(config); onSave(); });
-
-  const hrefIn = input("link-href", "href");
-  hrefIn.value = link.href;
-  hrefIn.addEventListener("change", async () => { link.href = hrefIn.value; await save(config); onSave(); });
-
-  const iconIn = input("link-icon", "icon url");
-  iconIn.value = link.icon || "";
-  iconIn.addEventListener("change", async () => { link.icon = iconIn.value; await save(config); onSave(); });
-
-  const rm = document.createElement("button");
-  rm.textContent = "x";
-  rm.addEventListener("click", async () => {
-    block.links.splice(li, 1);
-    await save(config);
-    onSave();
-    redrawLinks();
-  });
-
-  row.append(labelIn, hrefIn, iconIn, rm);
-  return row;
 }
 
 // ---------- helpers ----------

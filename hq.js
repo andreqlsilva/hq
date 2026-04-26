@@ -20,6 +20,14 @@ try {
   }
 } catch { /* no pages dir */ }
 
+function matchRoute(pattern, actual) {
+  const si = pattern.indexOf(" ");
+  if (pattern.slice(0, si) !== actual.slice(0, si)) return null;
+  const re = new RegExp("^" + pattern.slice(si + 1).replace(/:([^/]+)/g, "(?<$1>[^/]+)") + "$");
+  const m = actual.slice(si + 1).match(re);
+  return m ? m.groups : null;
+}
+
 const MIME = {
   html: "text/html; charset=utf-8",
   js:   "application/javascript",
@@ -67,8 +75,12 @@ async function handler(req) {
     const [, id, subpath = "/"] = compMatch;
     const routes = componentRoutes.get(id);
     if (routes) {
-      const handler = routes[`${req.method} ${subpath}`];
-      if (handler) return handler(req);
+      const key = `${req.method} ${subpath}`;
+      if (routes[key]) return routes[key](req, {});
+      for (const [pattern, fn] of Object.entries(routes)) {
+        const params = matchRoute(pattern, key);
+        if (params) return fn(req, params);
+      }
     }
     return new Response("not found", { status: 404 });
   }

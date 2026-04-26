@@ -8,9 +8,6 @@ export const DEFAULTS = {
     { id: "home", label: "home", href: "#",    active: true },
     { id: "adm",  label: "adm",  href: "#adm", active: true },
   ],
-  home: {
-    blocks: [],
-  },
 };
 
 const DDL = `

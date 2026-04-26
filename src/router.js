@@ -16,12 +16,12 @@ export async function refresh() {
   route();
 }
 
-function route() {
+async function route() {
   const page = location.hash.slice(1) || "";
   main.innerHTML = "";
   switch (page) {
     case "adm":  renderAdm(main, config, refresh);  break;
-    default:     renderHome(main, config);           break;
+    default:     await renderHome(main);             break;
   }
 }
 

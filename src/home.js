@@ -1,47 +1,30 @@
-// src/home.js - Homepage renderer: themed blocks of icon+link tiles.
+// src/home.js - Homepage renderer: auto-discovers pages and shows them as tiles.
 
-export function render(container, config) {
+export async function render(container) {
   container.innerHTML = "";
-  const { blocks = [] } = config.home;
 
-  if (!blocks.length) {
+  let pages = [];
+  try {
+    const res = await fetch("/api/pages");
+    pages = await res.json();
+  } catch { /* pages unavailable */ }
+
+  if (!pages.length) {
     const p = document.createElement("p");
     p.className = "hq-empty";
-    p.innerHTML = 'No blocks configured. Visit <a href="#adm">adm</a> to set up your homepage.';
+    p.textContent = "No pages found. Add pages to the pages/ directory.";
     container.appendChild(p);
     return;
   }
 
-  for (const block of blocks) {
-    const section = document.createElement("section");
-    section.className = "hq-block";
-    if (block.theme) section.dataset.theme = block.theme;
-
-    const h2 = document.createElement("h2");
-    h2.textContent = block.title;
-    section.appendChild(h2);
-
-    const ul = document.createElement("ul");
-    for (const link of block.links || []) {
-      const li = document.createElement("li");
-      const a  = document.createElement("a");
-      a.href  = link.href;
-      a.title = link.label;
-
-      if (link.icon) {
-        const img = document.createElement("img");
-        img.src = link.icon;
-        img.alt = link.label;
-        a.appendChild(img);
-      }
-
-      const span = document.createElement("span");
-      span.textContent = link.label;
-      a.appendChild(span);
-      li.appendChild(a);
-      ul.appendChild(li);
-    }
-    section.appendChild(ul);
-    container.appendChild(section);
+  const grid = document.createElement("div");
+  grid.className = "hq-grid";
+  for (const page of pages) {
+    const a = document.createElement("a");
+    a.href = page.href;
+    a.className = "hq-tile";
+    a.textContent = page.label;
+    grid.appendChild(a);
   }
+  container.appendChild(grid);
 }
